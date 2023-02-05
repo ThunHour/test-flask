@@ -1,0 +1,80 @@
+version: '3.8'
+networks:
+  app-network:
+    driver: bridge
+services:
+  web:
+    restart: always
+    depends_on:
+      - db
+    image: 27042020/flask-project
+    build: .
+    command: python app.py
+    networks:
+      - app-network
+    ports:
+      - 5000:3000
+    expose:
+      - 5000
+  db:
+    image: postgres:14.3-alpine
+    container_name: db
+    networks:
+      - app-network
+    restart: always
+    environment:
+      POSTGRES_USER: kimhour
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: flask-project
+    ports:
+      - "5435:5432"
+# version: '3.8'
+
+# # Docker Networks
+# networks:
+#   dc-app-network:
+#     driver: bridge
+
+# services:
+#   DC:
+#     image: 27042020/flask-project
+#     container_name: dc-app
+#     build:
+#       context: .
+#       target: development
+#     depends_on:
+#       - postgresql
+#     ports:
+#       - 3000:3000
+#     networks:
+#       - dc-app-network
+#     restart: always
+
+#   postgresql:
+#     image: postgres:latest
+#     container_name: dc-postgresql
+#     env_file:
+#       - .env
+#     ports:
+#       - 5555:5432
+#     volumes:
+#       - postgres_data:/var/lib/postgresql/data
+#     networks:
+#       - dc-app-network
+#     restart: always
+#   pgadmin4:
+#     image: dpage/pgadmin4
+#     container_name: pg-admin4
+#     depends_on:
+#       - postgresql
+#     env_file:
+#       - .env
+#     ports:
+#       - 5000:80
+#     volumes:
+#       - pgadmin4:/var/lib/pgadmin4
+#     networks:
+#       - dc-app-network
+# volumes:
+#   postgres_data:
+#   pgadmin4:
